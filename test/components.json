@@ -1,0 +1,16 @@
+{
+  "scenes": {
+    "Triangle Scene": {
+      "testComponent": {
+        "testProperty": "testData1"
+      }
+    }
+  },
+  "nodes": {
+    "Triangle Node": {
+      "testComponent": {
+        "testProperty": "testData2"
+      }
+    }
+  }
+}

@@ -1,0 +1,44 @@
+#!/usr/bin/env node
+
+const program = require("commander");
+const addComponentData = require("../src/index");
+const fs = require("fs-extra");
+const path = require("path");
+const package = fs.readJSONSync(path.join(__dirname, "..", "package.json"));
+
+program
+  .version(package.version)
+  .usage('<gltfPath> <componentsPath> [options]')
+  .option("-o, --out <out>", "The directory to output the modified glTF file. Defaults to the existing glTF path.")
+  .action((gltfPath, componentsPath, options) => {
+    execute(gltfPath, componentsPath, options.out).then(() => {
+      process.exit(0);
+    }).catch((err) => {
+      throw err;
+    });
+  });
+
+async function execute(gltfPath, componentsPath, outPath) {
+  if (!fs.existsSync(gltfPath)) {
+    throw new Error(`gltf file: ${gltfPath} does not exist`);
+  }
+
+  if (!fs.existsSync(componentsPath)) {
+    throw new Error(`components file: ${componentsPath} does not exist`);
+  }
+
+  let gltf = await fs.readJson(gltfPath);
+  const components = await fs.readJson(componentsPath);
+
+  gltf = addComponentData(gltf, components)
+
+  let finalOutPath = outPath || gltfPath;
+  
+  await fs.outputJson(finalOutPath, gltf);
+}
+
+program.parse(process.argv);
+
+if (program.args.length === 0) {
+  program.outputHelp();
+}
