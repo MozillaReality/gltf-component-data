@@ -35,12 +35,22 @@ describe('gltf-component-data', () => {
 
   it('should overwrite the existing gltf file when the output dir is not specified', async () => {
     await execAsync(binPath, [tempGltfPath, componentsPath]);
+
+    const modifiedGltf = await fs.readJson(tempGltfPath);
+
+    assert.equal(modifiedGltf.scenes[0].extras.components.testComponent.testProperty, "testData1");
+    assert.equal(modifiedGltf.nodes[0].extras.components.testComponent.testProperty, "testData2");
   });
 
   it('should save to a new gltf file when the -o parameter is specified', async () => {
     const outputGltfPath = path.join(tmpDir, "out.gltf");
+
     await execAsync(binPath, [tempGltfPath, componentsPath, "-o", outputGltfPath]);
-    await fs.stat(outputGltfPath);
+
+    const modifiedGltf = await fs.readJson(outputGltfPath);
+
+    assert.equal(modifiedGltf.scenes[0].extras.components.testComponent.testProperty, "testData1");
+    assert.equal(modifiedGltf.nodes[0].extras.components.testComponent.testProperty, "testData2");
   });
 
   afterEach(async () => {

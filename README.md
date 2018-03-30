@@ -32,7 +32,7 @@ addComponentData(gltf, {
 ## CLI Usage
 
 ```
-npm install -g gltt-component-data
+npm install -g gltf-component-data
 ```
 
 ```
